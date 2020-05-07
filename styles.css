@@ -3,6 +3,10 @@ html, body{
   padding:0;
 }
 
+.nytimes{
+  height:100vh;
+}
+
 
 #dailypaper{
   margin:0;
