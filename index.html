@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NYTimes</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+  <div class="nytimes">
+    <embed id="dailypaper"
+      src="" 
+      alt="NYTimes"
+      type="application/pdf"
+      onError='previousDay(this)'
+    />
+  </div>
+  <script>
+    // TODO: error handling
+
+    // TODO:  use url history to change url and load page on demand
+    // instead of 'injecting' it.
+
+
+    // starts after page is fully loaded
+    window.addEventListener("load", function(){
+      const newspaperUpdate = 5; // 5:00am
+      
+      var d = new Date();
+      var year = d.getFullYear();
+      var month = d.getMonth()+1;
+      var day = d.getDate();
+      var hour = d.getHours();
+      var minutes = d.getMinutes();
+      
+      if(hour < newspaperUpdate) {
+        d.setDate(d.getDate() - 1);
+      }
+
+      var paperDate = year + "/" + addZero(month) + "/" + addZero(day);
+      console.log("paperDate: " + paperDate);
+
+      //if dailypaper src = "" load paper now (aka first load)
+      if(document.getElementById("dailypaper").getAttribute("src") == ""){
+        console.log("dailypaper src empty, loading initial paper...")
+        dailyNews(paperDate);
+      }
+      
+      //determine setTimeout interval between now and 5am
+      var hoursToNewPaper = newspaperUpdate - hour;
+      hoursToNewPaper = (hoursToNewPaper < 0) ? hoursToNewPaper + 24 : hoursToNewPaper;
+      // validated console.log("hoursToNewPaper: " + hoursToNewPaper);
+      
+      var milSecToNewPaper = (hoursToNewPaper * 3600000) - (minutes * 60000);
+      // console.log("milSecToNewPaper: " + milSecToNewPaper);
+      
+      //setTimeout(() => dailyNews(fullDate + 1));
+      setTimeout(() => dailyNews(paperDate), milSecToNewPaper);
+      //setTimeout(() => dailyNews("2020/04/01"), 9000);
+
+    });
+
+    function addZero(i) {
+      console.log("i: " + i);
+      return (i < 10) ? i = "0" + i : i;
+    }
+
+    function dailyNews(date){
+      console.log("dailynews("+date+")");
+      var leadingURL = "https://static01.nyt.com/images/";
+      var trailingURL = "/nytfrontpage/scan.pdf#view=fit&toolbar=0&statusbar=0&navpanes=0";
+      var paper = document.getElementById("dailypaper");
+      paper.setAttribute("src", leadingURL+date+trailingURL);
+
+      // additional pdf parameters
+      //...scan.pdf#view=fit&toolbar=0&statusbar=0&navpanes=0
+    }
+
+
+    // TODO:  catch 404 page -> reload previous paper -> add new setTimeout(for one hour)
+    function previousDay(source){
+      console.log("ERORRRR!!!!");
+      /*if(source.onerror){
+        console.log("ERROR!!!!!");
+      } else {
+        console.log('GTG');
+      */
+      source.setAttribute("src", "https://static01.nyt.com/images/2020/04/02/nytfrontpage/scan.pdf");
+      //source.onerror = "";
+      return true;
+      
+    }
+
+    // verify new page available
+    //setTimeout(() => dailyNews("2020/05/05"), 9000);
+
+  </script>
+  
+</body>
+</html>

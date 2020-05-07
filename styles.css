@@ -1,0 +1,29 @@
+html, body{
+  margin:0;
+  padding:0;
+}
+
+
+#dailypaper{
+  margin:0;
+  padding:0;
+  height:100vh;
+  width:100vw;
+}
+
+/* TODO:  smooth fade in, no 'pop' for page reload*/
+.fade-in { 
+    animation: fadeInAnimation ease 3s; 
+    animation-iteration-count: 1; 
+    animation-fill-mode: forwards; 
+} 
+  
+@keyframes fadeInAnimation { 
+    0% { 
+        opacity: 0; 
+    } 
+    100% { 
+        opacity: 1; 
+     } 
+} 
+
