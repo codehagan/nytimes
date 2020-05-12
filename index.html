@@ -24,41 +24,50 @@
 
     // starts after page is fully loaded
     window.addEventListener("load", function(){
-      const newspaperUpdate = 5; // 5:00am
+      const NEWSPAPER_UPDATE_HOUR = 5; // 5:00am
       
       var d = new Date();
-      var year = d.getFullYear();
-      var month = d.getMonth()+1;
-      var day = d.getDate();
       var hour = d.getHours();
       var minutes = d.getMinutes();
-      
-      if(hour < newspaperUpdate) {
+
+      // retrieving previous day paper: new paper may not be available before 5am
+      if(hour < NEWSPAPER_UPDATE_HOUR) {
         d.setDate(d.getDate() - 1);
       }
-
-      var paperDate = year + "/" + addZero(month) + "/" + addZero(day);
-      console.log("paperDate: " + paperDate);
 
       //if dailypaper src = "" load paper now (aka first load)
       if(document.getElementById("dailypaper").getAttribute("src") == ""){
         console.log("dailypaper src empty, loading initial paper...")
-        dailyNews(paperDate);
+        dailyNews(paperDate(d));
+      }else{
+        console.log("dailypaper src NOT empty, loading new paper...");
       }
       
       //determine setTimeout interval between now and 5am
-      var hoursToNewPaper = newspaperUpdate - hour;
+      var hoursToNewPaper = NEWSPAPER_UPDATE_HOUR - hour;
       hoursToNewPaper = (hoursToNewPaper < 0) ? hoursToNewPaper + 24 : hoursToNewPaper;
-      // validated console.log("hoursToNewPaper: " + hoursToNewPaper);
-      
       var milSecToNewPaper = (hoursToNewPaper * 3600000) - (minutes * 60000);
-      // console.log("milSecToNewPaper: " + milSecToNewPaper);
       
-      //setTimeout(() => dailyNews(fullDate + 1));
-      setTimeout(() => dailyNews(paperDate), milSecToNewPaper);
+      // add one day for next setTimeout ( nextDaysPaper )
+      d.setDate(d.getDate() + 1);
+      console.log(" => dailyNews("+ paperDate(d) +"), "+milSecToNewPaper+");");
+      setTimeout(() => dailyNews(nextDaysPaper(d)), milSecToNewPaper);
       //setTimeout(() => dailyNews("2020/04/01"), 9000);
+      
+      // milliseconds to hours minutes
+      // https://www.daftlogic.com/projects-convert-milliseconds-to-hours-minutes-seconds.htm
+      
 
     });
+
+    // d = date to format to paperDate
+    function paperDate(d){
+      var year = d.getFullYear();
+      var month = d.getMonth()+1;
+      var day = d.getDate();
+      // returns something like 2020/05/12
+      return year + "/" + addZero(month) + "/" + addZero(day);
+    }
 
     function addZero(i) {
       console.log("i: " + i);
@@ -66,7 +75,7 @@
     }
 
     function dailyNews(date){
-      console.log("dailynews("+date+")");
+      console.log("dailyNews("+date+")");
       var leadingURL = "https://static01.nyt.com/images/";
       var trailingURL = "/nytfrontpage/scan.pdf#view=fit&toolbar=0&statusbar=0&navpanes=0";
       var paper = document.getElementById("dailypaper");
