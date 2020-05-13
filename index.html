@@ -24,7 +24,7 @@
 
     // starts after page is fully loaded
     window.addEventListener("load", function(){
-      const NEWSPAPER_UPDATE_HOUR = 9; // 5:00am
+      const NEWSPAPER_UPDATE_HOUR = 5; // 5:00am
       
       var d = new Date();
       var hour = d.getHours();
@@ -94,14 +94,11 @@
       } else {
         console.log('GTG');
       */
-      source.setAttribute("src", "https://static01.nyt.com/images/2020/04/02/nytfrontpage/scan.pdf");
+      //source.setAttribute("src", "https://static01.nyt.com/images/2020/04/02/nytfrontpage/scan.pdf");
       //source.onerror = "";
       return true;
       
     }
-
-    // verify new page available
-    //setTimeout(() => dailyNews("2020/05/05"), 9000);
 
   </script>
   
