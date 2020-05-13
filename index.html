@@ -24,7 +24,7 @@
 
     // starts after page is fully loaded
     window.addEventListener("load", function(){
-      const NEWSPAPER_UPDATE_HOUR = 5; // 5:00am
+      const NEWSPAPER_UPDATE_HOUR = 9; // 5:00am
       
       var d = new Date();
       var hour = d.getHours();
@@ -51,7 +51,7 @@
       // add one day for next setTimeout ( nextDaysPaper )
       d.setDate(d.getDate() + 1);
       console.log(" => dailyNews("+ paperDate(d) +"), "+milSecToNewPaper+");");
-      setTimeout(() => dailyNews(nextDaysPaper(d)), milSecToNewPaper);
+      setTimeout(() => dailyNews(paperDate(d)), milSecToNewPaper);
       //setTimeout(() => dailyNews("2020/04/01"), 9000);
       
       // milliseconds to hours minutes
