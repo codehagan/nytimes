@@ -9,56 +9,73 @@
 <body>
   <div class="nytimes">
     <embed id="dailypaper"
+      type="application/pdf"  
       src="" 
       alt="NYTimes"
-      type="application/pdf"
       onError='previousDay(this)'
     />
   </div>
   <script>
     // TODO: error handling
 
-    // TODO:  use url history to change url and load page on demand
-    // instead of 'injecting' it.
-
+    const NEWSPAPER_UPDATE_HOUR = 5; // 5:00am
 
     // starts after page is fully loaded
     window.addEventListener("load", function(){
-      const NEWSPAPER_UPDATE_HOUR = 5; // 5:00am
-      
-      var d = new Date();
-      var hour = d.getHours();
-      var minutes = d.getMinutes();
 
-      // retrieving previous day paper: new paper may not be available before 5am
-      if(hour < NEWSPAPER_UPDATE_HOUR) {
+      // display paper
+      getDailyNews();
+    });
+
+    /* ========================================= */
+    function getDailyNews(){
+      let d = new Date();
+      // before 5am? = yes then get yesterday paper
+      if(d.getHours() < NEWSPAPER_UPDATE_HOUR){
         d.setDate(d.getDate() - 1);
       }
 
-      //if dailypaper src = "" load paper now (aka first load)
-      if(document.getElementById("dailypaper").getAttribute("src") == ""){
-        console.log("dailypaper src empty, loading initial paper...")
-        dailyNews(paperDate(d));
-      }else{
-        console.log("dailypaper src NOT empty, loading new paper...");
-      }
-      
-      //determine setTimeout interval between now and 5am
-      var hoursToNewPaper = NEWSPAPER_UPDATE_HOUR - hour;
-      hoursToNewPaper = (hoursToNewPaper < 0) ? hoursToNewPaper + 24 : hoursToNewPaper;
-      var milSecToNewPaper = (hoursToNewPaper * 3600000) - (minutes * 60000);
-      
-      // add one day for next setTimeout ( nextDaysPaper )
-      d.setDate(d.getDate() + 1);
-      console.log(" => dailyNews("+ paperDate(d) +"), "+milSecToNewPaper+");");
-      setTimeout(() => dailyNews(paperDate(d)), milSecToNewPaper);
-      //setTimeout(() => dailyNews("2020/04/01"), 9000);
-      
-      // milliseconds to hours minutes
-      // https://www.daftlogic.com/projects-convert-milliseconds-to-hours-minutes-seconds.htm
-      
+      // embed pdf
+      embedDailyNews(paperDate(d));
 
-    });
+      // setTimeout for next paper
+      //setTimeout(() => dailyNews("2020/04/01"), 9000);
+      console.log("getDailyNews()");
+      console.log("getTimeoutInterval: " + getTimeoutInterval(d, NEWSPAPER_UPDATE_HOUR));
+      setTimeout(() => getDailyNews(), getTimeoutInterval(d, NEWSPAPER_UPDATE_HOUR));
+    }
+
+    /*
+    function getDailyNews(){
+      let d = new Date();
+      embedDailyNews(paperDate(d));
+      console.log("getDailyNews()");
+      console.log("getTimeoutInterval: " + getTimeoutInterval(d, NEWSPAPER_UPDATE_HOUR));
+      setTimeout(() => getDailyNews(), getTimeoutInterval(d, NEWSPAPER_UPDATE_HOUR));
+    }
+    */
+
+
+    function embedDailyNews(date){
+      console.log("dailyNews("+date+")");
+      var leadingURL = "https://static01.nyt.com/images/";
+      var trailingURL = "/nytfrontpage/scan.pdf#view=fit&toolbar=0&statusbar=0&navpanes=0";
+
+      var outerEl = `
+      <embed 
+        id="dailypaper" 
+        class="fade-in"
+        type="application/pdf"  
+        src="${leadingURL+date+trailingURL}" 
+        alt="NYTimes" 
+        onError="previousDay(this)" />
+      `;
+      var paper = document.getElementById("dailypaper");
+      paper.outerHTML = outerEl;
+
+      // additional pdf parameters
+      //...scan.pdf#view=fit&toolbar=0&statusbar=0&navpanes=0
+    }
 
     // d = date to format to paperDate
     function paperDate(d){
@@ -70,35 +87,41 @@
     }
 
     function addZero(i) {
-      console.log("i: " + i);
       return (i < 10) ? i = "0" + i : i;
     }
 
-    function dailyNews(date){
-      console.log("dailyNews("+date+")");
-      var leadingURL = "https://static01.nyt.com/images/";
-      var trailingURL = "/nytfrontpage/scan.pdf#view=fit&toolbar=0&statusbar=0&navpanes=0";
-      var paper = document.getElementById("dailypaper");
-      paper.setAttribute("src", leadingURL+date+trailingURL);
-
-      // additional pdf parameters
-      //...scan.pdf#view=fit&toolbar=0&statusbar=0&navpanes=0
+    function getTimeoutInterval(d, N_U_H){
+      let hoursToNewPaper = N_U_H - d.getHours();
+      hoursToNewPaper = (hoursToNewPaper <= 0) ? hoursToNewPaper + 24 : hoursToNewPaper;
+      console.log("hoursToNewPaper: "+hoursToNewPaper);
+      const milSecToNewPaper = (hoursToNewPaper * 3600000) - (d.getMinutes() * 60000);
+      return 60000; /*testing*/
+      //return milSecToNewPaper;
     }
+
+    
+    // milliseconds to hours minutes
+    // https://www.daftlogic.com/projects-convert-milliseconds-to-hours-minutes-seconds.htm
+      
+
 
 
     // TODO:  catch 404 page -> reload previous paper -> add new setTimeout(for one hour)
     function previousDay(source){
       console.log("ERORRRR!!!!");
-      /*if(source.onerror){
+      if(source.onerror){
         console.log("ERROR!!!!!");
       } else {
         console.log('GTG');
-      */
+      
       //source.setAttribute("src", "https://static01.nyt.com/images/2020/04/02/nytfrontpage/scan.pdf");
       //source.onerror = "";
       return true;
-      
+      }
     }
+    
+      
+    
 
   </script>
   
