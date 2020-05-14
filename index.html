@@ -95,8 +95,8 @@
       hoursToNewPaper = (hoursToNewPaper <= 0) ? hoursToNewPaper + 24 : hoursToNewPaper;
       console.log("hoursToNewPaper: "+hoursToNewPaper);
       const milSecToNewPaper = (hoursToNewPaper * 3600000) - (d.getMinutes() * 60000);
-      return 60000; /*testing*/
-      //return milSecToNewPaper;
+      //return 60000; /*testing*/
+      return milSecToNewPaper;
     }
 
     
