@@ -21,14 +21,14 @@
     const NEWSPAPER_UPDATE_HOUR = 5; // 5:00am
 
     // starts after page is fully loaded
-    window.addEventListener("load", function(){
+    window.addEventListener("load", () => {
 
       // display paper
       getDailyNews();
     });
 
     /* ========================================= */
-    function getDailyNews(){
+    const getDailyNews = () => {
       let d = new Date();
       // before 5am? = yes then get yesterday paper
       if(d.getHours() < NEWSPAPER_UPDATE_HOUR){
@@ -40,24 +40,10 @@
 
       // setTimeout for next paper
       //setTimeout(() => dailyNews("2020/04/01"), 9000);
-      console.log("getDailyNews()");
-      console.log("getTimeoutInterval: " + getTimeoutInterval(d, NEWSPAPER_UPDATE_HOUR));
       setTimeout(() => getDailyNews(), getTimeoutInterval(d, NEWSPAPER_UPDATE_HOUR));
     }
 
-    /*
-    function getDailyNews(){
-      let d = new Date();
-      embedDailyNews(paperDate(d));
-      console.log("getDailyNews()");
-      console.log("getTimeoutInterval: " + getTimeoutInterval(d, NEWSPAPER_UPDATE_HOUR));
-      setTimeout(() => getDailyNews(), getTimeoutInterval(d, NEWSPAPER_UPDATE_HOUR));
-    }
-    */
-
-
-    function embedDailyNews(date){
-      console.log("dailyNews("+date+")");
+    const embedDailyNews = (date) => {
       var leadingURL = "https://static01.nyt.com/images/";
       var trailingURL = "/nytfrontpage/scan.pdf#view=fit&toolbar=0&statusbar=0&navpanes=0";
 
@@ -78,7 +64,7 @@
     }
 
     // d = date to format to paperDate
-    function paperDate(d){
+    const paperDate = (d) => {
       var year = d.getFullYear();
       var month = d.getMonth()+1;
       var day = d.getDate();
@@ -86,28 +72,24 @@
       return year + "/" + addZero(month) + "/" + addZero(day);
     }
 
-    function addZero(i) {
+    const addZero = (i) => {
       return (i < 10) ? i = "0" + i : i;
     }
 
-    function getTimeoutInterval(d, N_U_H){
+    const getTimeoutInterval = (d, N_U_H) => {
       let hoursToNewPaper = N_U_H - d.getHours();
       hoursToNewPaper = (hoursToNewPaper <= 0) ? hoursToNewPaper + 24 : hoursToNewPaper;
-      console.log("hoursToNewPaper: "+hoursToNewPaper);
       const milSecToNewPaper = (hoursToNewPaper * 3600000) - (d.getMinutes() * 60000);
       //return 60000; /*testing*/
       return milSecToNewPaper;
     }
-
-    
+ 
     // milliseconds to hours minutes
     // https://www.daftlogic.com/projects-convert-milliseconds-to-hours-minutes-seconds.htm
       
 
-
-
     // TODO:  catch 404 page -> reload previous paper -> add new setTimeout(for one hour)
-    function previousDay(source){
+    const previousDay = (source) => {
       console.log("ERORRRR!!!!");
       if(source.onerror){
         console.log("ERROR!!!!!");
@@ -119,9 +101,6 @@
       return true;
       }
     }
-    
-      
-    
 
   </script>
   
